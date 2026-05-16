@@ -82,6 +82,7 @@
 
     <script>
         const BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@56a9ad69de7233f1d6c7ce4dd6bd9688ae5e32a7/revc/assets/"
+        const SCRIPT_BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@56a9ad69de7233f1d6c7ce4dd6bd9688ae5e32a7/revc/"
         const loadingText = document.querySelector("#loading-text")
         let loadedBytes = 0
         const DB_NAME = "gameFilesDB"
@@ -218,7 +219,7 @@
 
             ;["gamepademulator.js", "idbfs.js", "game.js"].forEach(src => {
                 const s = document.createElement("script")
-                s.src = BASE_URL + src
+                s.src = SCRIPT_BASE_URL + src
                 document.body.appendChild(s)
             })
 
