@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
     <title>Grand Theft Auto: Vice City</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@56a9ad69de7233f1d6c7ce4dd6bd9688ae5e32a7/revc/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@c0c21344d59805930e8955ad096caab1bec7ea74/revc/style.css">
 </head>
 
 <body data-is-touch="0" data-state-car="0" data-state-car-gun="0" data-state-gun="0" data-state-bike="0"
@@ -81,8 +81,9 @@
     </script>
 
     <script>
-        const BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@56a9ad69de7233f1d6c7ce4dd6bd9688ae5e32a7/revc/assets/"
-        const SCRIPT_BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@56a9ad69de7233f1d6c7ce4dd6bd9688ae5e32a7/revc/"
+        const BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@c0c21344d59805930e8955ad096caab1bec7ea74/revc/assets/"
+        const SCRIPT_BASE_URL = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@c0c21344d59805930e8955ad096caab1bec7ea74/revc/"
+        const indexWasmUrl = "https://cdn.jsdelivr.net/gh/reeyuki/YukiVcEmu@c0c21344d59805930e8955ad096caab1bec7ea74/revc/index.wasm"
         const loadingText = document.querySelector("#loading-text")
         let loadedBytes = 0
         const DB_NAME = "gameFilesDB"
@@ -185,7 +186,13 @@
             window.fetch = async function (input, init) {
                 let url = input instanceof Request ? input.url : String(input)
 
+                if (url.includes("cdn.dos.zone")) {
+                    url = url.split("fetched/").pop().split("cdn.dos.zone/").pop()
+                    input = url
+                }
+
                 if (url.includes("index.data")) input = indexdataurl
+                if (url.includes("index.wasm")) input = indexWasmUrl
                 else if (url.includes("emotion.adf")) input = EMOTION
                 else if (url.includes("espant.adf")) input = ESPANT
                 else if (url.includes("fever.adf")) input = FEVER
@@ -195,13 +202,19 @@
                 else if (url.includes("vrock.adf")) input = VROCK
                 else if (url.includes("wave.adf")) input = WAVE
                 else if (url.includes("wild.adf")) input = WILD
-                else if (typeof input === "string" && !input.startsWith("http")) input = BASE_URL + input
-
+                else if (typeof input === "string" && !input.startsWith("http") && !input.startsWith("blob:") && !input.startsWith("data:")) {
+                    input = BASE_URL + input
+                }
+                console.log("Loading: ", input)
                 return originalFetch(input, init)
             }
 
             const originalOpen = XMLHttpRequest.prototype.open
             XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+                if (url.includes("cdn.dos.zone")) {
+                    url = url.split("fetched/").pop().split("cdn.dos.zone/").pop()
+                }
+
                 if (url.includes("index.data")) url = indexdataurl
                 else if (url.includes("emotion.adf")) url = EMOTION
                 else if (url.includes("espant.adf")) url = ESPANT
@@ -212,7 +225,7 @@
                 else if (url.includes("vrock.adf")) url = VROCK
                 else if (url.includes("wave.adf")) url = WAVE
                 else if (url.includes("wild.adf")) url = WILD
-                else if (!url.startsWith("http")) url = BASE_URL + url
+                else if (!url.startsWith("http") && !url.startsWith("blob:") && !url.startsWith("data:")) url = BASE_URL + url
 
                 return originalOpen.call(this, method, url, ...rest)
             }
