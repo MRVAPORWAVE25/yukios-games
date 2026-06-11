@@ -34,9 +34,9 @@
               "Intercepting game.unx request, loading from local files",
             );
             return Promise.all([
-              originalFetch("game.unx.aa").then((r) => r.arrayBuffer()),
-              originalFetch("game.unx.ab").then((r) => r.arrayBuffer()),
-              originalFetch("game.unx.ac").then((r) => r.arrayBuffer()),
+              originalFetch(rewriteURL("game.unx.aa")).then((r) => r.arrayBuffer()),
+              originalFetch(rewriteURL("game.unx.ab")).then((r) => r.arrayBuffer()),
+              originalFetch(rewriteURL("game.unx.ac")).then((r) => r.arrayBuffer()),
             ]).then(([part1, part2, part3]) => {
               const totalSize =
                 part1.byteLength + part2.byteLength + part3.byteLength;
@@ -104,13 +104,13 @@
                         "XHR send intercepted for game.unx, merging parts",
                       );
                       Promise.all([
-                        originalFetch("game.unx.aa").then((r) =>
+                        originalFetch(rewriteURL("game.unx.aa")).then((r) =>
                           r.arrayBuffer(),
                         ),
-                        originalFetch("game.unx.ab").then((r) =>
+                        originalFetch(rewriteURL("game.unx.ab")).then((r) =>
                           r.arrayBuffer(),
                         ),
-                        originalFetch("game.unx.ac").then((r) =>
+                        originalFetch(rewriteURL("game.unx.ac")).then((r) =>
                           r.arrayBuffer(),
                         ),
                       ])
